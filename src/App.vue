@@ -1,11 +1,58 @@
 <template>
   <div class="container grid-xs py2">
-    Hello world
+    <img class="img-responsive img-logo" src="./assets/logo.png" alt="Logomarca da Switch Case">
+    <form @submit.prevent="addTodo(todo)">
+      <div class="input-group">
+        <input type="text" v-model="todo.description" class="form-input" placeholder="Novo ToDo">
+        <button class="btn btn-primary input-group-btn">Adicionar</button>
+      </div>
+    </form>
+    <div class="todo-list">
+      <todoItem v-for="t in todos" :key="t.id" @toggle="toggleTodo" @remove="removeTodo" :todo="t" />
+    </div>
   </div>
 </template>
 
 <script>
+import TodoItem from './components/TodoItem'
+
 export default {
-  name: 'App'
+
+  name: 'App',
+  components: { TodoItem },
+  data() {
+    return { todos: [], todo: { checked: false } }
+  },
+  methods: {
+    addTodo(todo) {
+      todo.id = Date.now()
+      this.todos.push(todo)
+      this.todo = { checked: false }
+    },
+    toggleTodo(todo) {
+      const index = this.todos.findIndex(item => item.id == todo.id)
+      if (index > -1) {
+        const checked = !this.todos[index].checked
+        this.todos[index].checked = checked
+      }
+    },
+    removeTodo(todo) {
+      const index = this.todos.findIndex(item => item.id == todo.id)
+      if (index > -1) {
+        this.todos.splice(index, 1)
+      }
+    }
+  }
 }
 </script>
+
+<style scoped>
+.img-logo {
+  max-width: 200px;
+  margin: 0 auto;
+}
+
+.todo-list {
+  padding-top: 2rem;
+}
+</style>
